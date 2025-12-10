@@ -28,26 +28,46 @@
 
     </ul>
 
-    <script>
-        function updateCountdown() {
-            const now = new Date();
-            const target = new Date('2025-12-22T00:00:00').getTime();
-            const remaining = target - now.getTime();
+<script>
+    let offsetMs = 0;
 
-            if (remaining <= 0) {
-                document.getElementById('countdown').textContent = '0d 0h 0s';
-                return;
-            }
+    async function getTimeOffset() {
+        try {
+            const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+            const data = await response.json();
+            const apiTime = new Date(data.datetime).getTime();
+            const localTime = new Date().getTime();
+            offsetMs = apiTime - localTime;
+        } catch (error) {
+            console.error('Error fetching time:', error);
+            offsetMs = 0;
+        }
+    }
 
-            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+    function updateCountdown() {
+        const now = new Date().getTime() + offsetMs;
+        const target = new Date('2025-12-22T00:00:00Z').getTime();
+        const remaining = target - now;
 
-            document.getElementById('countdown').textContent = `${days}d ${hours}h ${seconds}s`;
+        if (remaining <= 0) {
+            document.getElementById('countdown').textContent = '0d 0h 0m 0s';
+            return;
         }
 
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+        document.getElementById('countdown').textContent =
+            `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    getTimeOffset().then(() => {
         updateCountdown();
-        setInterval(updateCountdown, 10);
-    </script>
+        setInterval(updateCountdown, 1000);
+    });
+</script>
+
 </body>
 </html>
