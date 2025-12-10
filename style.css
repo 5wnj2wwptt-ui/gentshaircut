@@ -40,3 +40,25 @@ h3, h2 {
   margin: 0 auto;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+#timer {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 20px;
+}
+
+#timer p {
+    margin: 5px 0;
+}
+
+#timer p:first-child {
+    font-weight: 10;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+#countdown {
+    font-size: 56px;
+    font-weight: bold;
+    margin: 10px 0 0 0;
+}
